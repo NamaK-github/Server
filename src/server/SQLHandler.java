@@ -1,5 +1,7 @@
 package server;
 
+import exceptions.RegFailExeption;
+
 import java.sql.*;
 
 /**
@@ -13,7 +15,6 @@ public class SQLHandler {
     public static void connect() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/chat?useSSL=false", DB_LOGIN, DB_PASSWORD);
-
     }
 
     public static String getNick(String login, String password) throws SQLException {
@@ -28,8 +29,19 @@ public class SQLHandler {
         return nick;
     }
 
-    public static void closeConnection(){
-        if (connection!=null){
+    public static void makeRegistration(String login, String password, String nick) throws SQLException, RegFailExeption {
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery("select login from `users`");
+        while (rs.next()) {
+            if (login.equals(rs.getString(1))) {
+                throw new RegFailExeption();
+            }
+        }
+        statement.executeQuery("INSERT INTO `users` (`nick`, `login`, `password`) VALUES ('" + nick + "', '" + login + "', '" + password + "');");
+    }
+
+    public static void closeConnection() {
+        if (connection != null) {
             try {
                 connection.close();
                 System.out.println("Соединение с базой данных разорвано.");

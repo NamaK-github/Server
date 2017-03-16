@@ -1,6 +1,7 @@
 package server;
 
 import exceptions.AuthFailException;
+import exceptions.RegFailExeption;
 import exceptions.WrongDataExeption;
 
 import java.io.DataInputStream;
@@ -113,7 +114,21 @@ public class ClientHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (!message.equals("end___session___client")) {
+            if (message.equals("end___session___client")) {
+                System.out.println(clientName + ": вышел из чата.");
+                server.newMessageFromClient(": вышел из чата.", clientName);
+                server.removeClient(this);
+                break;
+            } else if (message.contains("reg___")){
+                String[] parsedMessage = message.split("___");
+                if (parsedMessage.length == 4 && parsedMessage[0].equals("reg")) {
+                    try {
+                        processReg(parsedMessage);
+                    } catch (RegFailExeption e) {
+                        server.systemMessageToClient(this, "reg___login___error");
+                    }
+                }
+            } else {
                 System.out.println(clientName + ": " + message);
                 new Thread(new Runnable() {
                     @Override
@@ -121,12 +136,19 @@ public class ClientHandler implements Runnable {
                         server.newMessageFromClient(message, clientName);
                     }
                 }).start();
-            } else {
-                System.out.println(clientName + ": вышел из чата.");
-                server.newMessageFromClient(": вышел из чата.", clientName);
-                server.removeClient(this);
-                break;
             }
+        }
+    }
+
+    private void processReg(String[] parsedMessage) throws RegFailExeption{
+        System.out.println("Регистрация от " + clientName);
+        String login = parsedMessage[1];
+        String password = parsedMessage[2];
+        String nick = parsedMessage[3];
+        try {
+            SQLHandler.makeRegistration(login, password, nick);
+        } catch (SQLException e) {
+
         }
     }
 

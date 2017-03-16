@@ -95,4 +95,13 @@ public class Server {
             e.printStackTrace();
         }
     }
+
+    public void systemMessageToClient(ClientHandler client, String message) {
+        try {
+            client.getOut().writeUTF(message);
+            client.getOut().flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

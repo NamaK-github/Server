@@ -54,7 +54,7 @@ public class ClientHandler implements Runnable {
                 System.out.println(clientName + ": вышел из чата.");
                 server.removeClient(this);
                 break;
-            } else if(message.contains("reg___")){
+            } else if (message.contains("reg___")) {
                 String[] parsedMessage = message.split("___");
                 if (parsedMessage.length == 4 && parsedMessage[0].equals("reg")) {
                     try {
@@ -128,7 +128,7 @@ public class ClientHandler implements Runnable {
                 server.newMessageFromClient(": вышел из чата.", clientName);
                 server.removeClient(this);
                 break;
-            } else if (message.contains("reg___")){
+            } else if (message.contains("reg___")) {
                 String[] parsedMessage = message.split("___");
                 if (parsedMessage.length == 4 && parsedMessage[0].equals("reg")) {
                     try {
@@ -150,7 +150,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private void processReg(String[] parsedMessage) throws RegFailExeption{
+    private void processReg(String[] parsedMessage) throws RegFailExeption {
         System.out.println("Регистрация от " + clientName);
         String login = parsedMessage[1];
         String password = parsedMessage[2];

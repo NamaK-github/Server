@@ -55,7 +55,7 @@ public class Server {
         System.out.println(clientHandler.getClientName() + " вошёл в чат.");
     }
 
-    public synchronized void removeClient(ClientHandler clientHandler){
+    public synchronized void removeClient(ClientHandler clientHandler) {
         clients.remove(clientHandler);
     }
 

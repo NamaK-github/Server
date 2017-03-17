@@ -33,11 +33,11 @@ public class SQLHandler {
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select login from `users`");
         while (rs.next()) {
-            if (login.equals(rs.getString(1))) {
+            if (login.equalsIgnoreCase(rs.getString(1))) {
                 throw new RegFailExeption();
             }
         }
-        statement.executeQuery("INSERT INTO `users` (`nick`, `login`, `password`) VALUES ('" + nick + "', '" + login + "', '" + password + "');");
+        statement.executeUpdate("INSERT INTO `users` (`nick`, `login`, `password`) VALUES ('" + nick + "', '" + login + "', '" + password + "');");
     }
 
     public static void closeConnection() {

@@ -50,7 +50,20 @@ public class ClientHandler implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (!message.equals("end___session___client")) {
+            if (message.equals("end___session___client")) {
+                System.out.println(clientName + ": вышел из чата.");
+                server.removeClient(this);
+                break;
+            } else if(message.contains("reg___")){
+                String[] parsedMessage = message.split("___");
+                if (parsedMessage.length == 4 && parsedMessage[0].equals("reg")) {
+                    try {
+                        processReg(parsedMessage);
+                    } catch (RegFailExeption e) {
+                        server.systemMessageToClient(this, "reg___login___error");
+                    }
+                }
+            } else {
                 try {
                     if (isAuthOK(message)) {
                         out.writeUTF("signin___successfull");
@@ -65,10 +78,6 @@ public class ClientHandler implements Runnable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } else {
-                System.out.println(clientName + ": вышел из чата.");
-                server.removeClient(this);
-                break;
             }
         }
     }
@@ -125,6 +134,7 @@ public class ClientHandler implements Runnable {
                     try {
                         processReg(parsedMessage);
                     } catch (RegFailExeption e) {
+                        System.out.println("Неудачная регистрация.");
                         server.systemMessageToClient(this, "reg___login___error");
                     }
                 }
@@ -148,7 +158,6 @@ public class ClientHandler implements Runnable {
         try {
             SQLHandler.makeRegistration(login, password, nick);
         } catch (SQLException e) {
-
         }
     }
 
